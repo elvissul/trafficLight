@@ -1,0 +1,25 @@
+
+<div class="container">
+  <div class="row">
+    <form #editForm="ngForm" id="editForm" (ngSubmit)="editTrafficLightConfiguration()">
+      <div class="form-group">
+        <label for="redLightTime">Red Light Time (s)</label>
+        <input type="number" class="form-control" [min]="1" [(ngModel)]="trafficLightConfiguration.redLightTime" name="redLightTime" id="redLightTime" placeholder="(in seconds)">
+      </div>
+      <div class="form-group">
+        <label for="yellowLightTime">Yellow Light Time (s)</label>
+        <input type="number" class="form-control" [min]="1" [(ngModel)]="trafficLightConfiguration.yellowLightTime" name="yellowLightTime" id="yellowLightTime" placeholder="(in seconds)">
+      </div>
+      <div class="form-group">
+        <label for="greenLightTime">Green Light Time (s)</label>
+        <input type="number" class="form-control" [min]="1" [(ngModel)]="trafficLightConfiguration.greenLightTime" name="greenLightTime" id="greenLightTime" placeholder="(in seconds)">
+      </div>
+      <div class="form-group">
+        <label for="pedestrianCrossingTime">Pedesrian crossing time (s)</label>
+        <input type="number" class="form-control" [min]="1" [(ngModel)]="trafficLightConfiguration.pedestrianCrossingTime" name="pedestrianCrossingTime" id="pedestrianCrossingTime" placeholder="(in seconds)">
+      </div>
+      <button type="submit" class="btn btn-primary mt-2">Submit</button>
+    </form>
+    <span ngDefaultControl [(ngModel)]="errors"></span>
+  </div>
+</div>

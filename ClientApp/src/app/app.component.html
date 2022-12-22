@@ -1,0 +1,22 @@
+<div class="container">
+  <div class="row">
+    <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+      <li [ngbNavItem]="1">
+        <a ngbNavLink>Traffic light</a>
+        <ng-template ngbNavContent>
+         <app-trafficLight></app-trafficLight>
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="2">
+        <a ngbNavLink>Configuration</a>
+        <ng-template ngbNavContent>
+          <app-trafficLightConfiguration></app-trafficLightConfiguration>
+        </ng-template>
+      </li>
+    </ul>
+  </div>
+<div [ngbNavOutlet]="nav" class="mt-2">
+</div>
+
+  <pre>Active: {{ active }}</pre>
+</div>
