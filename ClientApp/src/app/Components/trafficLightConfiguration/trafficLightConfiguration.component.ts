@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, HostListener, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { TrafficLightModel } from 'src/app/Models/TrafficLightModel';
 import { TrafficLightService } from 'src/app/Services/TrafficLight.service';
@@ -42,4 +42,5 @@ export class TrafficLightConfigurationComponent implements OnInit {
       }
     });
   }
+
 }

@@ -13,6 +13,7 @@ namespace TrafficLight.Infrastructure.Models
         public int RedLightTime { get; set; } = 120;
         public int YellowLightTime { get; set; } = 5;
         public int GreenLightTime { get; set; } = 120;
+        public int GreenLightTimeMax { get; set; } = 360;
         public int PedestrianCrossingTime { get; set; } = 30;
     }
 }

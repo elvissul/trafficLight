@@ -59,9 +59,13 @@ namespace TrafficLight.Infrastructure.Services
             {
                 return "not valid RedLightTime";
             }
-            if (trafficLightCofiguration.GreenLightTime < 120 || trafficLightCofiguration.GreenLightTime > 360 || trafficLightCofiguration.GreenLightTime == null)
+            if (trafficLightCofiguration.GreenLightTime < 0 || trafficLightCofiguration.GreenLightTime == null || trafficLightCofiguration.GreenLightTime > trafficLightCofiguration.GreenLightTimeMax)
             {
                 return "not valid GreenLightTime";
+            }
+            if (trafficLightCofiguration.GreenLightTimeMax < 0 || trafficLightCofiguration.GreenLightTimeMax == null || trafficLightCofiguration.GreenLightTimeMax < trafficLightCofiguration.GreenLightTime)
+            {
+                return "not valid GreenLightTimeMax";
             }
             return null;
         }
