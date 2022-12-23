@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TrafficLight.Infrastructure.Enums;
+using System.Xml.Linq;
 using TrafficLight.Infrastructure.Models;
 using TrafficLight.Infrastructure.Services.Interfaces;
 
@@ -12,21 +12,19 @@ namespace TrafficLight.Infrastructure.Services
     public class TrafficLightService : ITrafficLightService
     {
 
-        private TrafficLightModel TrafficLight = new TrafficLightModel();
+        //private TrafficLightModel TrafficLight = new TrafficLightModel();
+        private TrafficLightModel _trafficLight = new TrafficLightModel();
+        public TrafficLightModel TrafficLight  // read-write instance property
+        {
+            get => _trafficLight;
+            set => _trafficLight = value;
+        }
+
         public async Task<TrafficLightModel> GetTrafficLightConfiguration() 
         {
-            return TrafficLight;
+            return _trafficLight;
         }
 
-        public int SetGreenTime(int timeInSeconds)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int SetRedTime(int timeInSeconds)
-        {
-            throw new NotImplementedException();
-        }
         public async Task<ServiceResponse<TrafficLightModel>> UpdateTrafficLightConfiguration(TrafficLightModel trafficLightCofiguration)
         {
             var result = new ServiceResponse<TrafficLightModel>
@@ -42,9 +40,9 @@ namespace TrafficLight.Infrastructure.Services
                 result.Message = error;
                 return result;
             }
-                 
-            TrafficLight = trafficLightCofiguration;
-            result.Data = TrafficLight;
+
+            _trafficLight = trafficLightCofiguration;
+            result.Data = _trafficLight;
 
             return result;
         }
