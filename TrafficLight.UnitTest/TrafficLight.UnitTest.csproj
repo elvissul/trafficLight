@@ -21,4 +21,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TrafficLight.Api\TrafficLight.Api.csproj" />
+    <ProjectReference Include="..\TrafficLight.Infrastructure\TrafficLight.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
