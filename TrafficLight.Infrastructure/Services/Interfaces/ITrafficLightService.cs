@@ -12,8 +12,8 @@ namespace TrafficLight.Infrastructure.Services.Interfaces
     {
         public int SetRedTime(int timeInSeconds);
         public int SetGreenTime(int timeInSeconds);
-        public Task<TrafficLightModel> GetTrafficLightConfiguration();
-        public Task<ServiceResponse<TrafficLightModel>> UpdateTrafficLightConfiguration(TrafficLightModel trafficLightCofiguration);
+        public Task<TrafficLightClass> GetTrafficLightConfiguration();
+        public Task<ServiceResponse<TrafficLightClass>> UpdateTrafficLightConfiguration(TrafficLightClass trafficLightCofiguration);
 
     }
 }
