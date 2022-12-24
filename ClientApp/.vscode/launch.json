@@ -11,10 +11,11 @@
   },
     {
       "name": "ng serve",
-      "type": "pwa-chrome",
+      "type": "chrome",
       "request": "launch",
-      "preLaunchTask": "npm: start",
-      "url": "http://localhost:4200/"
+     // "preLaunchTask": "npm:ng serve",
+      "url": "http://localhost:4200/",
+      "webRoot": "${workspaceFolder}/ClientApp",
     },
     {
       "name": "ng test",
