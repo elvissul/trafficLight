@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TrafficLight.Infrastructure.Models;
-using TrafficLight.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.SignalR;
+using TrafficLight.Api.HubConfig;
+using TrafficLight.Api.Models;
+using TrafficLight.Api.Models.TrafficLightModels;
+using TrafficLight.Api.Services;
+using TrafficLight.Api.Services.Interfaces;
 
 namespace TrafficLight.Api.Controllers
 {
@@ -10,42 +14,42 @@ namespace TrafficLight.Api.Controllers
     public class TrafficLightController : ControllerBase
     {
         private readonly ITrafficLightService _trafficLightService;
+        private readonly IHubContext<TrafficLightHub> _hub;
+        private readonly ITrafficLightManager _timer;
 
-        public TrafficLightController(ITrafficLightService trafficLightService)
+        public TrafficLightController(ITrafficLightService trafficLightService, ITrafficLightManager timer)
         {
             _trafficLightService = trafficLightService;
+            _timer = timer;
         }
 
-        private TrafficLightClass TrafficLight = new TrafficLightClass();
 
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<TrafficLightClass>>> GetTrafficLihtConfiguration()
+        public async Task<IActionResult> GetTrafficLihtConfiguration()
         { 
-            var trafficLightConfiguration = await _trafficLightService.GetTrafficLightConfiguration();
-            return Ok(trafficLightConfiguration);
-        }
-        [HttpPost]
-        public async Task<ActionResult<TrafficLightClass>> GetTrafficLihtConfiguration(TrafficLightClass trafficLightConfiguration)
-        {
-            var response = await _trafficLightService.UpdateTrafficLightConfiguration(trafficLightConfiguration);
+            var response = _trafficLightService.GetTrafficLightProperies();
+            if (response.Success == false) {
+                return BadRequest(response);
+            }
             return Ok(response);
         }
         [HttpPost]
-
-        public async Task StartTrafficLight()
+        public async Task<IActionResult> UpdateTrafficLihtConfiguration(TrafficLightProperies trafficLightConfiguration)
         {
-           
-            
+            var response = _trafficLightService.UpdateTrafficLightProperies(trafficLightConfiguration);
+            if (response.Success == false)
+            {
+                return BadRequest(response);
+            }
+            return Ok(response);
         }
-
-        private static Timer aTimer;
-        private static void StartTimer() { 
-            
-        }
-        private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
+    
+        [HttpGet("start")]
+        public IActionResult StartTrafficLight()
         {
-            Console.WriteLine("The Elapsed event was raised at {0}", e.SignalTime);
+            if (!_timer.IsTimerStarted)
+                _timer.PrepareTimer(() => _trafficLightService.StartTrafficLight(_timer.Ticks));
+            return Ok(new { Message = "Request Completed" });
         }
-
     }
 }

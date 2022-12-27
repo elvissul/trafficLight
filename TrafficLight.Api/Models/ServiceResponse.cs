@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TrafficLight.Infrastructure.Models
+namespace TrafficLight.Api.Models
 {
     public class ServiceResponse<T>
     {

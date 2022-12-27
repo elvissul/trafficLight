@@ -1,5 +1,5 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { delay } from 'rxjs';
 import { TrafficLightModel } from 'src/app/Models/TrafficLightModel';
 import { TrafficLightService } from 'src/app/Services/TrafficLight.service';
 
@@ -10,6 +10,7 @@ import { TrafficLightService } from 'src/app/Services/TrafficLight.service';
 })
 export class TrafficLightComponent implements OnInit {
   trafficLightConfiguration = {} as TrafficLightModel;
+  errors:string = "";
   time: number = 0;
   display:any ;
   interval:any;
@@ -23,103 +24,69 @@ export class TrafficLightComponent implements OnInit {
   greenCounter:number;
 
   isTrafficLightStarted:boolean = false;
+  isFirstTimeStarted:boolean = true
 
-  constructor(private trafficLightService: TrafficLightService) { }
+  constructor(public trafficLightService: TrafficLightService, private http:HttpClient) { }
 
   ngOnInit() {
-    this.trafficLightService.getTrafficLightConfiguration().subscribe((value) => {
-      this.trafficLightConfiguration = value;
+    this.trafficLightService.GetTrafficLightConfiguration().subscribe((value) => {
+      if(value.message != null && value.success == false)
+      {
+        this.errors = value.message;
+        console.log(this.errors)
+      }else if(value.data != null){
+        this.trafficLightConfiguration = value.data;
+      }else{
+        this.errors = "Something get wrong please try again later";
+        console.log(this.errors)
+      }
     });
   }
 
-  StartTimer(){
-    console.log("=====>");
-    this.greenCounter = this.trafficLightConfiguration.greenLightTime;
-    this.interval = setInterval(() => {
-      if (this.time === 0) {
-        this.time++;
-      } else {
-        this.time++;
-      }
-
-      if(this.pedestrianRequest == false){
-       this.trafficLightCycle();
-      }else{
-        if(this.greenActive == true &&
-          ((this.time - this.trafficLightConfiguration.pedestrianCrossingTime) > this.trafficLightConfiguration.redLightTime)
-          && ((this.greenCounter + this.trafficLightConfiguration.pedestrianCrossingTime) < this.trafficLightConfiguration.greenLightTimeMax)){
-            console.log("Time before = "+this.time)
-          this.time = this.time - this.trafficLightConfiguration.pedestrianCrossingTime;
-          console.log("Time after = "+this.time)
-          this.greenCounter = this.greenCounter + this.trafficLightConfiguration.greenLightTime;
-          this.pedestrianRequest = false
-          console.log("GreenCounter = "+this.greenCounter)
-        }else
-        {
-          this.pedestrianRequest = false;
-        }
-      }
-
-      this.display=this.transform( this.time)
-    }, 1000);
-
-  }
-  transform(value: number): string {
-    const minutes: number = Math.floor(value / 60);
-    return minutes + ':' + (value - minutes * 60);
-  }
+  private StartTrafficLight = () => {
+    this.http.get('https://localhost:7000/api/TrafficLight/start').subscribe(res =>
+      console.log(res)
+    )}
   
+  ActiveLight(color:number){
+    return this.trafficLightService.activeLights.includes(color);
+  }
+
   PedestrianRequest(){
-    console.log("Pedestrian want to coss the street")
     this.pedestrianRequest = true
+    this.trafficLightService.PedestrianRequest();
+    console.log("Pedestrian want to coss the street")
+
   }
   StopTrafficLigh() {
-    console.log("Traffic light is frozen")
+    console.log("Traffic light is stoped")
+    this.trafficLightService.StopTrafficLight();
     clearInterval(this.interval);
   }
-  StartStopButton(){
-    this.isTrafficLightStarted == true ? this.StopTrafficLigh() : this.StartTimer();
-    this.isTrafficLightStarted = !this.isTrafficLightStarted;
+  ResumeTrafficlight(){
+    console.log("Traffic light is started again")
+    this.trafficLightService.ResumeTrafficLight();
   }
-
-  trafficLightCycle(){
-    if(this.time > this.trafficLightConfiguration.redLightTime + this.trafficLightConfiguration.greenLightTime + this.trafficLightConfiguration.yellowLightTime  )
+  StartStopButton(){
+    if(this.isFirstTimeStarted){
+      console.log("trafficlights started for the first time")
+      this.trafficLightService.StartConnection();
+      this.trafficLightService.AddTransferDataListener();
+      this.StartTrafficLight();
+      this.isFirstTimeStarted = false
+    }
+    else
     {
-      this.yellowActive = false;
-      this.redActive = true;
-      clearInterval(this.interval);
-      this.time = 0
-      this.StartTimer();
+      console.log("Resume")
+      this.isTrafficLightStarted = !this.isTrafficLightStarted;
+      if(this.isTrafficLightStarted == true) 
+      {
+        this.StopTrafficLigh()
+      }
+      else{ 
+        this.ResumeTrafficlight();
+      }
     }
-
-    if(this.time <= this.trafficLightConfiguration.redLightTime){
-    this.redActive = true;    
-    console.log("Traffic light : red")
-    }
-
-    if(this.time > (this.trafficLightConfiguration.redLightTime - this.trafficLightConfiguration.yellowLightTime)
-        && (this.time <= this.trafficLightConfiguration.redLightTime))
-    {
-      this.yellowActive =true;
-      console.log("Traffic light : yellow to green")
-    }
-
-    if((this.time > this.trafficLightConfiguration.redLightTime) 
-      && (this.time <= (this.trafficLightConfiguration.redLightTime + this.trafficLightConfiguration.greenLightTime)))
-    {
-      this.greenCounter--;
-      this.redActive = false;
-      this.yellowActive = false;
-      this.greenActive = true;
-      console.log("Traffic light : green")
-    }
-
-    if(this.time > this.trafficLightConfiguration.redLightTime + this.trafficLightConfiguration.greenLightTime )
-    {
-      this.greenActive = false;
-      this.yellowActive = true;
-      
-      console.log("Traffic light : yellow to Red")
-    }
+    
   }
 }

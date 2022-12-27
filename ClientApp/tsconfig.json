@@ -20,14 +20,18 @@
     "module": "ES2022",
     "useDefineForClassFields": false,
     "types": [
-      "@angular/localize"
+      "@angular/localize",
+      "reflect-metadata", "jest"
     ],
+    "typeRoots": ["./types", "./node_modules/@types"],
     "lib": [
       "ES2022",
       "dom"
     ],
     "strictPropertyInitialization": false
   },
+  "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.ts"],
+  "include": ["./src/**/*.tsx", "./src/**/*.ts"],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,

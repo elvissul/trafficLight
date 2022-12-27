@@ -1,10 +1,10 @@
 <div class="container">
   <div class="row">
     <div class="col-6">
-      <div class="trafficLight">
-        <span id="redlight" [ngClass]="{'red': redActive}"></span>
-        <span id="yellowlight" [ngClass]="{'yellow': yellowActive}"></span>
-        <span id="greenlight" [ngClass]="{'green': greenActive}"></span>
+      <div class="trafficLight" *ngIf='trafficLightService.activeLights'>
+        <span id="redlight" [ngClass]="{'red': ActiveLight(0)}"></span>
+        <span id="yellowlight" [ngClass]="{'yellow': ActiveLight(1)}"></span>
+        <span id="greenlight" [ngClass]="{'green': ActiveLight(2)}"></span>
       </div>
     </div>
     <div class="col-6">
@@ -13,4 +13,3 @@
     </div>
 </div>
 </div>
-<p>{{display }} Seconds</p> 
